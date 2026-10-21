@@ -4,9 +4,13 @@
 #   VERSION=0.1.0 scripts/bundle.sh
 #   ARCHS=arm64 scripts/bundle.sh     faster local build
 #   SIGN_ID="dockpin dev" scripts/bundle.sh
-#       sign with a fixed local identity so the Accessibility grant survives rebuilds
+#       sign with a fixed identity so the Accessibility grant survives rebuilds
+#   SIGN_KEYCHAIN=… SIGN_KEYCHAIN_PASSWORD=…
+#       take that identity from a dedicated keychain, unlocked here without a prompt
+# These can also live in .env.signing (git-ignored), which is read if present.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+[ -f .env.signing ] && . ./.env.signing
 
 VERSION="${VERSION:-$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null | sed 's/^v//' || true)}"
 VERSION="${VERSION:-0.0.0}"
@@ -31,6 +35,11 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 lipo -create "${bins[@]}" -output "$APP/Contents/MacOS/dockpin"
 sed "s/__VERSION__/$VERSION/g" Resources/Info.plist > "$APP/Contents/Info.plist"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/"
-codesign --force --options runtime --sign "$SIGN_ID" "$APP"
+sign_args=(--force --options runtime --sign "$SIGN_ID")
+if [ -n "${SIGN_KEYCHAIN:-}" ]; then
+  security unlock-keychain -p "${SIGN_KEYCHAIN_PASSWORD:?}" "$SIGN_KEYCHAIN"
+  sign_args+=(--keychain "$SIGN_KEYCHAIN")
+fi
+codesign "${sign_args[@]}" "$APP"
 
-echo "built $APP $VERSION ($(lipo -archs "$APP/Contents/MacOS/dockpin"))"
+echo "built $APP $VERSION ($(lipo -archs "$APP/Contents/MacOS/dockpin")), signed: $(codesign -dr - "$APP" 2>&1 | sed -n 's/^designated => //p')"

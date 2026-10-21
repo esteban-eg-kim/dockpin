@@ -26,9 +26,7 @@ struct MenuView: View {
 
         Divider()
 
-        if model.trusted {
-            Text("Accessibility: Allowed")
-        } else {
+        if !model.trusted {
             Button("⚠️ Allow Accessibility Access…") { model.requestAccess() }
         }
         Button("About dockpin") {

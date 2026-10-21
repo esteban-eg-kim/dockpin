@@ -17,7 +17,7 @@ struct OnboardingView: View {
                 }
             }
 
-            Text("To stop the Dock from following the cursor to other displays, dockpin needs to see mouse movement. Allow it under System Settings › Privacy & Security › Accessibility.")
+            Text("To stop the Dock from following the cursor to other displays, and to move it to the display you pick, dockpin needs to see and move the mouse. Allow it under System Settings › Privacy & Security › Accessibility.")
                 .fixedSize(horizontal: false, vertical: true)
 
             HStack {

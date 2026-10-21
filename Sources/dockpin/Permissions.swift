@@ -1,6 +1,9 @@
 import AppKit
 import ApplicationServices
 
+/// One permission covers everything dockpin does: Accessibility lets it filter mouse
+/// events (to guard the edges) and post them (to move the Dock).
+/// Input Monitoring is not needed; that is for watching the keyboard.
 enum Permissions {
     static var isTrusted: Bool { AXIsProcessTrusted() }
 

@@ -4,3 +4,4 @@ build/
 dist/
 *.xcodeproj/
 .swiftpm/
+.env.signing

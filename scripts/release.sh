@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.."
 VERSION="${1:?usage: scripts/release.sh <version>}"
 VERSION="${VERSION#v}"
 
-swift test
+scripts/test.sh
 VERSION="$VERSION" scripts/bundle.sh
 
 mkdir -p dist

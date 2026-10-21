@@ -13,7 +13,12 @@ final class EdgeGuard: @unchecked Sendable {
         var layout: GuardLayout = .empty
         var enabled = true
         var optionBypass = true
+        /// While dockpin itself walks the cursor to the Dock edge, hand movement is held back.
+        var relocating = false
     }
+
+    /// Marks the events dockpin posts itself, so the tap lets them through.
+    static let syntheticMarker: Int64 = 0x646F_636B_7069_6E  // "dockpin"
 
     private let config = OSAllocatedUnfairLock(initialState: Config())
     private var tap: CFMachPort?
@@ -65,6 +70,8 @@ final class EdgeGuard: @unchecked Sendable {
             return Unmanaged.passUnretained(event)
         case .mouseMoved:
             let config = config.withLock { $0 }
+            if event.getIntegerValueField(.eventSourceUserData) == Self.syntheticMarker { break }
+            if config.relocating { return nil }
             guard config.enabled else { break }
             if config.optionBypass && event.flags.contains(.maskAlternate) { break }
             if config.layout.blocks(event.location) { return nil }

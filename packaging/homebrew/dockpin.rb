@@ -25,7 +25,7 @@ cask "dockpin" do
   zap trash: "~/Library/Preferences/io.github.esteban-eg-kim.dockpin.plist"
 
   caveats <<~EOS
-    dockpin needs Accessibility access to see mouse movement:
+    dockpin needs Accessibility access:
       System Settings › Privacy & Security › Accessibility › dockpin
     After an upgrade, macOS may ask again: remove dockpin from that list and add it back.
   EOS
