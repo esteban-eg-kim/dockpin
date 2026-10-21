@@ -8,9 +8,25 @@ With more than one display, macOS moves the Dock to whichever screen you push th
 cursor against the bottom of. Reach for a window near the bottom of your second
 monitor and the Dock jumps over. There is no setting to turn this off.
 
-dockpin is a small menu bar app that stops it. Pick the display the Dock belongs
-on; the Dock edges of the other displays stop waking the Dock. Hold `Option` when
-you do want to move it.
+dockpin is a small menu bar app that stops it.
+
+<p align="center">
+  <img src="docs/media/demo-en.gif" alt="dockpin demo: the Dock stays put, moves when you pick a display, and moves with Option held" width="720">
+</p>
+
+<p align="center"><a href="docs/media/demo-en.mp4">Watch in full quality (MP4)</a></p>
+
+## Features
+
+- **The Dock stays put.** The Dock edges of your other displays stop pulling the
+  Dock over. The pointer still moves freely.
+- **Pick a display, the Dock moves there.** Right away, from the menu bar.
+- **Hold `Option`** to move the Dock the usual way when you want to.
+- **Knows your layout.** Edges shared with a neighbouring display stay open, so the
+  pointer still crosses between stacked monitors. Bottom, left and right Docks.
+- **Brings the Dock home** when the pinned display is plugged back in.
+- **One permission, no network.** Accessibility only. No keyboard access, no data
+  collected.
 
 ## Install
 
@@ -25,73 +41,52 @@ move `dockpin.app` to `/Applications`, and run once:
 xattr -dr com.apple.quarantine /Applications/dockpin.app
 ```
 
-dockpin is not notarized (no paid Apple Developer account), so without that line
-macOS refuses to open it. The source is all here; you can also [build it yourself](#build).
+dockpin is signed but not notarized (no paid Apple Developer account), so without
+that line macOS refuses to open it. Homebrew does it for you.
 
-Requires macOS 13 or later.
+## Quick start
 
-## Use
-
-1. Open dockpin. It asks for **Accessibility** access: System Settings ›
-   Privacy & Security › Accessibility › turn on dockpin. It uses it to filter mouse
-   movement and, when you pick a display, to move the cursor there. It never looks
-   at the keyboard, so Input Monitoring is not needed.
+1. Open dockpin and allow it under System Settings › Privacy & Security ›
+   **Accessibility** (macOS 27: **Device Control and Data Access**).
 2. Click the pin in the menu bar and choose the display under **Keep the Dock on**.
-   On first run it picks the display the Dock is on now.
+3. That's it. Push against the bottom of another display: the Dock stays.
 
-| Menu item | What it does |
-|---|---|
-| Pin the Dock | Turn dockpin on or off. The pin icon is crossed out while off. |
-| Keep the Dock on | The display the Dock stays on. Picking one moves the Dock there right away. |
-| Hold ⌥ to Let It Move | While `Option` is held, the Dock moves the normal way. |
-| Open at Login | Start dockpin when you log in. |
+<p align="center"><img src="docs/img/menu.png" alt="The dockpin menu" width="560"></p>
+
+The full guide covers every menu item, multi-display layouts, auto-hide and
+troubleshooting: **[Manual](docs/manual.md)** ([한국어](docs/manual.ko.md)).
 
 ## How it works
 
-The Dock moves when it sees the cursor pressing against a display's Dock edge.
-dockpin installs a mouse event tap and drops the mouse-moved events that land in a
-4-point strip along that edge on every display except the pinned one. The pointer
-itself still moves; the Dock just never sees the push.
+The Dock moves when it sees the pointer pressing against a display's Dock edge.
+dockpin drops the mouse moves that land in a 4-point strip along that edge on every
+display except the pinned one, and only on the *outer* part of the edge.
 
-To move the Dock when you pick a display, dockpin does what you would: it hides the
-pointer, runs it into that display's Dock edge for half a second, and puts it back.
-It pushes on a stretch of edge with no display beyond it, so the push can't slip
-onto a neighbour. The same happens when the pinned display is plugged back in.
+<p align="center"><img src="docs/img/edges-en.png" alt="Guarded and open edges on a three-display desk" width="720"></p>
 
-Only the *outer* part of an edge is guarded. Where another display is attached
-below (or beside, for a left/right Dock), the cursor crosses over as usual. The
-Dock's side (bottom, left, right) and display changes are picked up on their own.
+To move the Dock, dockpin does what you would: it runs the pointer into the pinned
+display's Dock edge for half a second, then puts it back.
 
-## Limitations
+## Requirements
 
-- Apps on the other displays don't get hover events in that 4-point strip.
-- Hot corners at the Dock edge of the other displays don't fire.
-- macOS ties these permissions to the app's signature. dockpin is ad-hoc signed,
-  so after an upgrade you may need to remove it from the Accessibility list (`−`)
-  and add it back.
-- If the pinned display is unplugged, dockpin keeps the Dock where it is until the
-  display comes back, then moves it home.
-- With Dock auto-hide on, dockpin can't tell which display the Dock is on, so it
-  only moves the Dock when you pick a display.
+| | |
+|---|---|
+| macOS | 13 Ventura or later (tested on macOS 27) |
+| Chips | Apple silicon and Intel (universal) |
+| Permission | Accessibility |
 
 ## Build
 
 Needs only the Xcode Command Line Tools (`xcode-select --install`).
 
 ```sh
-scripts/test.sh               # geometry tests (swift test, CLT-friendly)
+scripts/test.sh               # unit tests
 ARCHS=arm64 scripts/bundle.sh # → build/dockpin.app
 open build/dockpin.app
 ```
 
-Each ad-hoc build gets a new signature, which resets the Accessibility grant. To
-keep it, sign every build with one self-signed code signing certificate:
-`SIGN_ID="<name or SHA-1>" scripts/bundle.sh`. If `codesign` fails with
-`errSecInternalComponent` (it can't ask for the key), keep the identity in its own
-keychain and add `SIGN_KEYCHAIN=<path>` and `SIGN_KEYCHAIN_PASSWORD=<password>`.
-Put these in `.env.signing` (git-ignored) to make them the default.
-
-`swift run` works for the menu, but Open at Login needs the bundled app.
+See [Build from source](docs/manual.md#build-from-source) for keeping the
+permission across rebuilds, and `docs/media/make.sh` for the pictures and video.
 
 ## Related
 

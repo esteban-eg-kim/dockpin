@@ -2,15 +2,30 @@
 
 [English](README.md) · **한국어**
 
-**macOS Dock 을 한 화면에 고정합니다.**
+**macOS Dock을 한 화면에 고정합니다.**
 
-모니터를 여러 대 쓰면, 어느 화면이든 아래쪽 가장자리에 마우스를 밀어붙이는 순간
-Dock 이 그 화면으로 옮겨갑니다. 두 번째 모니터 아래쪽 창을 잡으려다 Dock 이 따라오는
-일이 반복되는데, 이걸 끄는 설정은 없습니다.
+모니터를 여러 대 쓰면, 어느 화면이든 아래쪽 가장자리에 커서를 밀어붙이는 순간 Dock이
+그 화면으로 옮겨갑니다. 두 번째 모니터 아래쪽 창을 잡으려다 Dock이 따라오는 일이
+반복되는데, 이걸 끄는 설정은 없습니다.
 
-dockpin 은 이걸 막는 작은 메뉴바 앱입니다. Dock 이 있어야 할 화면을 고르면, 나머지
-화면의 Dock 쪽 가장자리는 더 이상 Dock 을 부르지 않습니다. 일부러 옮기고 싶을 땐
-`Option` 을 누른 채로 밀면 됩니다.
+dockpin은 이걸 막는 작은 메뉴바 앱입니다.
+
+<p align="center">
+  <img src="docs/media/demo-ko.gif" alt="dockpin 데모: Dock이 제자리에 머물고, 화면을 고르면 옮겨가고, Option을 누르면 평소처럼 옮겨감" width="720">
+</p>
+
+<p align="center"><a href="docs/media/demo-ko.mp4">원본 화질로 보기 (MP4)</a></p>
+
+## 기능
+
+- **Dock이 제자리에 있습니다.** 다른 화면의 Dock 쪽 가장자리가 더 이상 Dock을 끌어가지
+  않습니다. 커서는 그대로 자유롭게 움직입니다.
+- **화면을 고르면 Dock이 그리로 갑니다.** 메뉴바에서 바로.
+- **`Option` 을 누른 채로** 밀면 원할 때 평소처럼 옮길 수 있습니다.
+- **화면 배치를 압니다.** 다른 화면과 맞닿은 가장자리는 열어 두어 위아래로 쌓은
+  모니터 사이를 커서가 그대로 넘어갑니다. 아래/왼쪽/오른쪽 Dock 모두 지원.
+- **고정 화면을 다시 연결하면** Dock을 데려옵니다.
+- **권한 하나, 네트워크 없음.** 손쉬운 사용 권한만 씁니다. 키보드 접근 없음, 수집 없음.
 
 ## 설치
 
@@ -25,74 +40,59 @@ brew install --cask esteban-eg-kim/tap/dockpin
 xattr -dr com.apple.quarantine /Applications/dockpin.app
 ```
 
-유료 Apple 개발자 계정이 없어 공증(notarization)을 받지 않았기 때문에, 이 명령이
-없으면 macOS 가 앱을 열지 않습니다. 소스는 전부 공개되어 있으니
-[직접 빌드](#빌드)해도 됩니다.
+dockpin은 서명은 되어 있지만 공증(notarization)은 받지 않았습니다(유료 Apple 개발자
+계정 필요). 그래서 이 명령이 없으면 macOS가 앱을 열지 않습니다. Homebrew로 설치하면
+알아서 처리됩니다.
 
-macOS 13 이상.
+## 빠른 시작
 
-## 사용법
-
-1. dockpin 을 열면 **손쉬운 사용** 권한을 요청합니다: 시스템 설정 › 개인정보 보호 및
-   보안 › 손쉬운 사용 › dockpin 켜기. 마우스 이동을 걸러내고, 화면을 고를 때 커서를
-   움직이는 데 씁니다. 키보드는 보지 않으므로 입력 모니터링 권한은 필요 없습니다.
+1. dockpin을 열고 시스템 설정 › 개인정보 보호 및 보안 › **손쉬운 사용** 에서 허용합니다
+   (macOS 27: **Device Control and Data Access**).
 2. 메뉴바의 핀 아이콘 › **Keep the Dock on** 에서 화면을 고릅니다.
-   처음 실행 시엔 지금 Dock 이 있는 화면으로 자동 설정됩니다.
+3. 끝. 다른 화면 아래쪽으로 커서를 밀어도 Dock이 그대로 있습니다.
 
-| 메뉴 | 동작 |
-|---|---|
-| Pin the Dock | dockpin 켜기/끄기. 꺼져 있으면 핀 아이콘에 사선이 그어집니다. |
-| Keep the Dock on | Dock 을 고정할 화면. 고르면 Dock 이 바로 그 화면으로 옮겨갑니다. |
-| Hold ⌥ to Let It Move | `Option` 을 누르고 있는 동안은 원래대로 Dock 이 옮겨갑니다. |
-| Open at Login | 로그인 시 자동 실행. |
+<p align="center"><img src="docs/img/menu.png" alt="dockpin 메뉴" width="560"></p>
+
+메뉴 항목 전부, 여러 화면 배치, 자동 가리기, 문제 해결은 **[사용 설명서](docs/manual.ko.md)**
+([English](docs/manual.md)) 에 있습니다.
 
 ## 동작 원리
 
-Dock 은 커서가 화면의 Dock 쪽 가장자리를 미는 것을 보고 옮겨갑니다. dockpin 은
-마우스 이벤트 탭을 걸어, 고정 화면이 아닌 화면의 그 가장자리 4pt 띠 안에서 생긴
-마우스 이동 이벤트를 버립니다. 커서 자체는 그대로 움직이고, Dock 만 그 "밀기"를
-못 봅니다.
+Dock은 커서가 화면의 Dock 쪽 가장자리를 미는 것을 보고 옮겨갑니다. dockpin은 고정
+화면이 아닌 모든 화면의 그 가장자리 4pt 띠 안에서 생긴 마우스 움직임을 버립니다.
+그것도 가장자리의 *바깥쪽* 부분에서만.
 
-화면을 고르면 dockpin 이 사람이 하듯 Dock 을 옮깁니다: 커서를 숨기고 그 화면의 Dock
-쪽 가장자리로 0.5초쯤 밀었다가 원래 자리로 돌려놓습니다. 너머에 다른 화면이 없는
-구간에서 밀기 때문에 커서가 옆 화면으로 넘어가지 않습니다. 고정한 화면을 다시
-연결했을 때도 같은 방식으로 Dock 을 데려옵니다.
+<p align="center"><img src="docs/img/edges-ko.png" alt="화면 세 대 책상에서 막힌 가장자리와 열린 구간" width="720"></p>
 
-가장자리 중 **바깥쪽** 부분만 막습니다. 아래(왼쪽/오른쪽 Dock 이면 옆)에 다른
-화면이 붙어 있는 구간은 평소처럼 넘어갈 수 있습니다. Dock 위치(아래/왼쪽/오른쪽)
-변경과 모니터 연결/해제는 자동으로 반영됩니다.
+Dock을 옮길 때는 사람이 하듯이, 고정 화면의 Dock 쪽 가장자리로 커서를 0.5초쯤
+밀었다가 원래 자리로 돌려놓습니다.
 
-## 한계
+## 요구 사항
 
-- 다른 화면의 그 4pt 띠 안에서는 앱이 마우스 hover 이벤트를 받지 못합니다.
-- 다른 화면의 Dock 쪽 핫코너는 동작하지 않습니다.
-- macOS 는 이 권한들을 앱 서명에 묶습니다. dockpin 은 ad-hoc 서명이라 업그레이드 후
-  손쉬운 사용 목록에서 dockpin 을 지웠다가(`−`) 다시 추가해야 할 수 있습니다.
-- 고정한 화면을 뽑으면, 다시 연결될 때까지 Dock 을 지금 있는 화면에 붙잡아 두고, 연결되면 다시 데려옵니다.
-- Dock 자동 가리기를 켜 두면 Dock 이 어느 화면에 있는지 알 수 없어서, 화면을 직접 고를 때만 옮깁니다.
+| | |
+|---|---|
+| macOS | 13 Ventura 이상 (macOS 27에서 테스트) |
+| 칩 | Apple 실리콘과 Intel (유니버설) |
+| 권한 | 손쉬운 사용 |
 
 ## 빌드
 
 Xcode Command Line Tools 만 있으면 됩니다 (`xcode-select --install`).
 
 ```sh
-scripts/test.sh               # 기하 계산 테스트 (CLT 환경용 swift test)
+scripts/test.sh               # 단위 테스트
 ARCHS=arm64 scripts/bundle.sh # → build/dockpin.app
 open build/dockpin.app
 ```
 
-ad-hoc 빌드는 매번 서명이 바뀌어 손쉬운 사용 권한이 초기화됩니다. 유지하려면 자체
-서명 코드 서명 인증서 하나로 모든 빌드를 서명하세요:
-`SIGN_ID="<이름 또는 SHA-1>" scripts/bundle.sh`. `codesign` 이 `errSecInternalComponent`
-로 실패하면(키 접근 확인 창을 못 띄움), 인증서를 전용 키체인에 넣고
-`SIGN_KEYCHAIN=<경로>`, `SIGN_KEYCHAIN_PASSWORD=<비밀번호>` 를 함께 주세요.
-`.env.signing`(git 제외)에 적어 두면 기본값이 됩니다.
+다시 빌드해도 권한을 유지하는 법은 [소스에서 빌드](docs/manual.ko.md#소스에서-빌드),
+그림과 영상을 다시 만드는 법은 `docs/media/make.sh` 를 보세요.
 
 ## 관련 프로젝트
 
 [DockAnchor](https://github.com/bwya77/DockAnchor) 도 같은 문제를 풀며 기능이 더
-많습니다(프로필, Dock 자동 복귀). dockpin 은 더 작게: 메뉴 하나, 화면 사이
-맞닿은 가장자리는 열어 둡니다.
+많습니다(프로필, Dock 자동 복귀). dockpin은 더 작게: 메뉴 하나, 화면 사이 맞닿은
+가장자리는 열어 둡니다.
 
 ## 라이선스
 

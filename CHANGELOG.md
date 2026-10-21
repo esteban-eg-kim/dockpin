@@ -10,3 +10,5 @@
 - Hold `Option` to move the Dock on purpose.
 - Follows the Dock's side (bottom, left, right) and display changes automatically.
 - Open at Login.
+- Manual in English and Korean, screenshots and a demo video
+  (`docs/manual.md`, `docs/media/make.sh` regenerates the media).
