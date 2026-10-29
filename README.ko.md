@@ -1,6 +1,6 @@
 # <img src="docs/logo/dockpin-512.png" alt="" width="40"> dockpin
 
-[English](README.md) · **한국어**
+[English](README.md) · **한국어** · [웹사이트](https://xkorfun.github.io)
 
 **macOS Dock을 한 화면에 고정합니다.**
 

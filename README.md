@@ -1,6 +1,6 @@
 # <img src="docs/logo/dockpin-512.png" alt="" width="40"> dockpin
 
-**English** · [한국어](README.ko.md)
+**English** · [한국어](README.ko.md) · [Website](https://xkorfun.github.io)
 
 **Keep the macOS Dock on one display.**
 
