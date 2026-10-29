@@ -70,6 +70,7 @@ Click the pin in the menu bar.
 |---|---|
 | **Pin the Dock** | Turns dockpin on or off. Off, the menu bar icon shows a crossed-out pin and the Dock behaves as macOS normally does. |
 | **Keep the Dock on** | Lists your displays by name and resolution. The checked one is where the Dock lives. Picking another moves the Dock there at once. |
+| **If It's Unplugged** | Where the Dock goes while the pinned display is disconnected: **Leave the Dock Where It Is** (default), or a display of your choice. When the pinned display comes back, so does the Dock. |
 | **Hold ⌥ to Let It Move** | While on, holding `Option` lets the Dock move the usual way. |
 | **Open at Login** | Starts dockpin when you log in. |
 | **⚠️ Allow Accessibility Access…** | Shown only while the permission is missing. Opens the right page in System Settings. |
@@ -91,13 +92,22 @@ mouse in that half second; dockpin ignores it anyway.
 pointer against the bottom of another display. The Dock moves the way it always
 did. This does not change the pinned display: it is a one-off.
 
-dockpin also brings the Dock home on its own when:
+dockpin also brings the Dock home on its own whenever it ends up somewhere else:
+when you turn **Pin the Dock** back on, when dockpin starts, when the pinned display
+is plugged back in, and when macOS moves the Dock by itself. macOS does that when
+displays wake from sleep: it may put the Dock on whichever display wakes first. No
+mouse is involved, so it can't be blocked, but dockpin checks every two seconds and
+fetches the Dock back a few seconds after the displays settle.
 
-- you turn **Pin the Dock** back on,
-- dockpin starts (or just got the permission), and
-- the pinned display is plugged back in.
+It leaves the Dock alone after an `Option` move, since you moved it on purpose,
+and while a mouse button is held. It never touches the pointer while the screen is
+locked, the displays are asleep, or you are switched to another user; after you
+unlock, it waits a second and then checks. If three tries in a row don't bring the
+Dock back, dockpin stops trying until the displays or its settings change, rather
+than keep taking over the pointer.
 
-It does not pull the Dock back after an `Option` move. You moved it on purpose.
+When it does move the Dock, it puts the pointer back exactly where it was, and
+tells the Dock so, so its icons don't stay magnified.
 
 ## Which edges are guarded
 
@@ -122,12 +132,18 @@ change by itself within a few seconds.
 ## Everyday situations
 
 **Unplugging the pinned display.** While it is gone, dockpin keeps the Dock where
-it is now instead of letting it wander. Plug the display back in and the Dock
-returns to it.
+it is now, or moves it to the display chosen under **If It's Unplugged**. Plug the
+pinned display back in and the Dock returns to it. A laptop that you sometimes use
+docked and sometimes alone is a typical case: pin the external display, and set the
+built-in display as the fallback.
 
-**Dock auto-hide.** With "Automatically hide and show the Dock" on, macOS gives no
-way to tell which display the Dock is on. Guarding works the same, but dockpin only
-moves the Dock when you pick a display in the menu.
+**Dock auto-hide.** Works the same as a visible Dock: dockpin asks the Dock where it
+is, hidden or not. (If a future macOS removes that, dockpin falls back to looking at
+the screen layout, which can't see a hidden Dock; then it only moves the Dock when
+you pick a display.)
+
+**Displays waking from sleep.** The Dock may briefly appear on another display
+while the displays come back, then return to the pinned one by itself.
 
 **Hot corners.** Hot corners at the Dock edge of the *other* displays don't fire,
 because those moves are dropped. Hot corners on the pinned display and on the other
@@ -152,9 +168,17 @@ to add it again and switch it on.
 - Check that you weren't holding `Option`.
 - Make sure the checked display under **Keep the Dock on** is the one you want.
 
+**Seeing what dockpin did.** dockpin logs what it notices and does: displays
+changing, the Dock moving and why, fetching it back. Run this in Terminal while
+reproducing the problem, and include the output in an issue:
+
+```sh
+log stream --predicate 'subsystem == "io.github.esteban-eg-kim.dockpin"'
+```
+
 **Picking a display didn't move the Dock.**
-- If Dock auto-hide is on, show the Dock once on the target display, or pick
-  the display again.
+- If the screen was locked, it waits until you unlock.
+- If the log says "giving up", three tries didn't work: pick the display again.
 - If the pinned display's whole Dock edge touches another display, there is no
   outer stretch to push against; dockpin can't move the Dock there. Move the
   Dock with `Option`, or rearrange displays in System Settings › Displays.
@@ -162,6 +186,17 @@ to add it again and switch it on.
 **"dockpin can't be opened because Apple cannot check it for malicious software."**
 Run `xattr -dr com.apple.quarantine /Applications/dockpin.app` once, or install
 with Homebrew.
+
+## Prefer no app at all?
+
+macOS has one built-in way to keep the Dock in place: turn off **Displays have
+separate Spaces** (System Settings › Desktop & Dock › Mission Control), then log out
+and back in. The Dock and the menu bar then stay on the main display (set it in
+System Settings › Displays by dragging the menu bar).
+
+The cost: only the main display gets a menu bar, a window can straddle displays,
+and full-screen apps take over every display instead of one. dockpin keeps separate
+Spaces and lets you put the Dock on any display, main or not.
 
 ## Privacy
 

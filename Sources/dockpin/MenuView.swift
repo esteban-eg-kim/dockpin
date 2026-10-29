@@ -16,6 +16,18 @@ struct MenuView: View {
         .pickerStyle(.inline)
         .disabled(!model.enabled)
 
+        Menu("If It's Unplugged") {
+            Picker("If It's Unplugged", selection: $model.fallbackID) {
+                Text("Leave the Dock Where It Is").tag(String?.none)
+                ForEach(model.screens.filter { $0.id != model.pinnedID }) { screen in
+                    Text("Use \(screen.title)").tag(Optional(screen.id))
+                }
+            }
+            .pickerStyle(.inline)
+            .labelsHidden()
+        }
+        .disabled(!model.enabled)
+
         Divider()
 
         Toggle("Hold ⌥ to Let It Move", isOn: $model.optionBypass)

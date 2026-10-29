@@ -24,7 +24,10 @@ dockpin is a small menu bar app that stops it.
 - **Hold `Option`** to move the Dock the usual way when you want to.
 - **Knows your layout.** Edges shared with a neighbouring display stay open, so the
   pointer still crosses between stacked monitors. Bottom, left and right Docks.
-- **Brings the Dock home** when the pinned display is plugged back in.
+- **Brings the Dock home** when macOS moves it by itself (displays waking from
+  sleep) or the pinned display is plugged back in. Never on the lock screen.
+- **A fallback display** for while the pinned one is unplugged.
+- **Works with auto-hide.**
 - **One permission, no network.** Accessibility only. No keyboard access, no data
   collected.
 

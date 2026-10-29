@@ -30,9 +30,16 @@ enum Screens {
         }
     }
 
-    /// The display the Dock is on now: the one whose usable area is inset on the
-    /// Dock's edge. Unknowable while the Dock auto-hides; then we say nil.
+    /// The display the Dock is on now. Asks the Dock for its rectangle (works with
+    /// auto-hide too); if that private call is gone, falls back to the display whose
+    /// usable area is inset on the Dock's edge, which auto-hide defeats.
     static func dockScreenID(edge: DockEdge) -> String? {
+        if let rect = CoreDock.rect() {
+            let center = CGPoint(x: rect.midX, y: rect.midY)
+            for screen in current() where screen.frame.contains(center) {
+                return screen.id
+            }
+        }
         for screen in NSScreen.screens {
             let frame = screen.frame, visible = screen.visibleFrame
             let inset: CGFloat
@@ -65,5 +72,36 @@ enum DockPrefs {
         CFPreferencesAppSynchronize("com.apple.dock" as CFString)
         let value = CFPreferencesCopyAppValue("orientation" as CFString, "com.apple.dock" as CFString) as? String
         return value.flatMap(DockEdge.init(rawValue:)) ?? .bottom
+    }
+}
+
+/// HIServices' private CoreDock calls, looked up at run time so a future macOS
+/// without them just means falling back, not crashing.
+enum CoreDock {
+    private typealias GetRect = @convention(c) (UnsafeMutablePointer<CGRect>) -> Void
+    private static let getRect: GetRect? = {
+        guard let handle = dlopen("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices", RTLD_LAZY),
+              let symbol = dlsym(handle, "CoreDockGetRect")
+        else { return nil }
+        return unsafeBitCast(symbol, to: GetRect.self)
+    }()
+
+    /// The Dock's frame in Quartz coordinates, where it shows even while hidden.
+    static func rect() -> CGRect? {
+        guard let getRect else { return nil }
+        var rect = CGRect.zero
+        getRect(&rect)
+        return rect.isEmpty ? nil : rect
+    }
+}
+
+/// Whether someone is actually at this session. dockpin never moves the pointer
+/// on the lock screen, with the displays asleep, or from a background session.
+enum Session {
+    static var isPresent: Bool {
+        let info = CGSessionCopyCurrentDictionary() as? [String: Any] ?? [:]
+        let onConsole = info[kCGSessionOnConsoleKey as String] as? Bool ?? true
+        let locked = info["CGSSessionScreenIsLocked"] as? Bool ?? false
+        return onConsole && !locked && CGDisplayIsAsleep(CGMainDisplayID()) == 0
     }
 }

@@ -11,7 +11,16 @@ enum DockMover {
         edgeGuard.update { $0.relocating = true }
         DispatchQueue.main.sync { NSCursor.hide() }
         defer {
-            if let home { CGWarpMouseCursorPosition(home) }
+            if let home {
+                CGWarpMouseCursorPosition(home)
+                // A warp posts no event, so the Dock would keep its icons magnified
+                // as if the pointer were still on it. Tell it where the pointer is.
+                if let event = CGEvent(mouseEventSource: source, mouseType: .mouseMoved,
+                                       mouseCursorPosition: home, mouseButton: .left) {
+                    event.setIntegerValueField(.eventSourceUserData, value: EdgeGuard.syntheticMarker)
+                    event.post(tap: .cghidEventTap)
+                }
+            }
             // Reconnect the pointer to the mouse at once instead of after the warp's pause.
             CGAssociateMouseAndMouseCursorPosition(1)
             edgeGuard.update { $0.relocating = false }

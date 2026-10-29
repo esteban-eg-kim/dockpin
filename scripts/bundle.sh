@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds build/dockpin.app (universal, ad-hoc signed).
+# Builds build/dockpin.app (universal; signed with SIGN_ID, else ad-hoc).
 #   scripts/bundle.sh                 version from the latest v* tag, else 0.0.0
 #   VERSION=0.1.0 scripts/bundle.sh
 #   ARCHS=arm64 scripts/bundle.sh     faster local build

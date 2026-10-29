@@ -27,6 +27,7 @@ cask "dockpin" do
   caveats <<~EOS
     dockpin needs Accessibility access:
       System Settings › Privacy & Security › Accessibility › dockpin
-    After an upgrade, macOS may ask again: remove dockpin from that list and add it back.
+      (macOS 27: Privacy & Security › Device Control and Data Access)
+    Open dockpin once and it walks you through it. Upgrades keep the permission.
   EOS
 end

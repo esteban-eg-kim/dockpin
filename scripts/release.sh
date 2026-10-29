@@ -9,12 +9,17 @@ cd "$(dirname "$0")/.."
 VERSION="${1:?usage: scripts/release.sh <version>}"
 VERSION="${VERSION#v}"
 
+# Releases must carry the fixed identity, or every upgrade drops the Accessibility grant.
+[ -f .env.signing ] && . ./.env.signing
+[ "${SIGN_ID:--}" != "-" ] || { echo "release needs SIGN_ID (see scripts/bundle.sh)" >&2; exit 1; }
+
 scripts/test.sh
 VERSION="$VERSION" scripts/bundle.sh
 
 mkdir -p dist
 zip="dist/dockpin-$VERSION.zip"
 rm -f "$zip"
+codesign --verify --deep --strict build/dockpin.app
 ditto -c -k --keepParent build/dockpin.app "$zip"
 
 echo
