@@ -173,7 +173,7 @@ changing, the Dock moving and why, fetching it back. Run this in Terminal while
 reproducing the problem, and include the output in an issue:
 
 ```sh
-log stream --predicate 'subsystem == "io.github.esteban-eg-kim.dockpin"'
+/usr/bin/log stream --predicate 'subsystem == "io.github.esteban-eg-kim.dockpin"'
 ```
 
 **Picking a display didn't move the Dock.**
@@ -203,7 +203,7 @@ Spaces and lets you put the Dock on any display, main or not.
 dockpin has no network code, collects nothing and stores only its own settings
 (which display is pinned and the menu toggles) in
 `~/Library/Preferences/io.github.esteban-eg-kim.dockpin.plist`. It sees mouse
-movement and nothing else. The source is in this repository.
+movement and nothing else. The source is [on GitHub](https://github.com/esteban-eg-kim/dockpin).
 
 ## Update and uninstall
 

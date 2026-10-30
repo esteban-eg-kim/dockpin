@@ -163,7 +163,7 @@ dockpin의 **Open System Settings** (또는 **+**)로 다시 추가하고 켜 �
 붙여 주세요:
 
 ```sh
-log stream --predicate 'subsystem == "io.github.esteban-eg-kim.dockpin"'
+/usr/bin/log stream --predicate 'subsystem == "io.github.esteban-eg-kim.dockpin"'
 ```
 
 **화면을 골랐는데 Dock이 안 옮겨졌다.**
@@ -192,7 +192,7 @@ Mission Control 에서 **디스플레이마다 별도의 Spaces 사용**(영문 
 
 dockpin에는 네트워크 코드가 없고, 아무것도 수집하지 않으며, 자기 설정(고정 화면과
 메뉴 토글)만 `~/Library/Preferences/io.github.esteban-eg-kim.dockpin.plist` 에
-저장합니다. 보는 것은 마우스 움직임뿐입니다. 소스는 이 저장소에 전부 있습니다.
+저장합니다. 보는 것은 마우스 움직임뿐입니다. 소스는 [GitHub](https://github.com/esteban-eg-kim/dockpin)에 전부 있습니다.
 
 ## 업데이트와 삭제
 
