@@ -2,8 +2,8 @@
 # (Casks/dockpin.rb), then:  brew install --cask esteban-eg-kim/tap/dockpin
 # scripts/release.sh prints the version and sha256 to paste here. Check with `brew style`.
 cask "dockpin" do
-  version "0.1.0"
-  sha256 "1c8d0972ba4aecc6d96a0a6f5c8cad32e5456a2558a77a709683b11529a51648"
+  version "0.1.1"
+  sha256 "8fd7f810772e3263e09b0c37efc8a78beb930fcb2b7b38ff37dde3804e675bf3"
 
   url "https://github.com/esteban-eg-kim/dockpin/releases/download/v#{version}/dockpin-#{version}.zip"
   name "dockpin"
