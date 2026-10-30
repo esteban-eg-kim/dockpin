@@ -34,7 +34,7 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 lipo -create "${bins[@]}" -output "$APP/Contents/MacOS/dockpin"
 sed "s/__VERSION__/$VERSION/g" Resources/Info.plist > "$APP/Contents/Info.plist"
-cp Resources/AppIcon.icns "$APP/Contents/Resources/"
+cp Resources/AppIcon.icns Resources/Assets.car "$APP/Contents/Resources/"
 sign_args=(--force --options runtime --sign "$SIGN_ID")
 if [ -n "${SIGN_KEYCHAIN:-}" ]; then
   security unlock-keychain -p "${SIGN_KEYCHAIN_PASSWORD:?}" "$SIGN_KEYCHAIN"

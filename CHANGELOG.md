@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.1 (2026-10-30)
+
+- README links the xkorfun site.
+- New app icon in the macOS 26 Liquid Glass style: blue in light mode, graphite in
+  dark mode, and it follows the tinted and clear icon styles. Earlier macOS versions
+  get the light one. Source is `Resources/AppIcon.icon` (Icon Composer);
+  `scripts/make-icon.sh` rebuilds it (needs Xcode, the app build itself does not).
+
 ## 0.1.0 (2026-10-29)
 
 - First version: pin the Dock to one display from the menu bar.
